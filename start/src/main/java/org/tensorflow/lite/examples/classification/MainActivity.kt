@@ -19,12 +19,14 @@ package org.tensorflow.lite.examples.classification
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.Bundle
 import android.util.Log
 import android.util.Size
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -49,7 +51,8 @@ import java.util.concurrent.Executors
 import kotlin.random.Random
 
 // Constants
-private const val MAX_RESULT_DISPLAY = 3 // Maximum number of results displayed
+private var datos:String = ""
+private const val MAX_RESULT_DISPLAY = 1 // Maximum number of results displayed
 private const val TAG = "TFL Classify" // Name for logging
 private const val REQUEST_CODE_PERMISSIONS = 999 // Return code after asking for permission
 private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA) // permission needed
@@ -62,7 +65,7 @@ typealias RecognitionListener = (recognition: List<Recognition>) -> Unit
  */
 class MainActivity : AppCompatActivity() {
 
-    // CameraX variables
+
     private lateinit var preview: Preview // Preview use case, fast, responsive view of the camera
     private lateinit var imageAnalyzer: ImageAnalysis // Analysis use case, for running ML code
     private lateinit var camera: Camera
@@ -76,10 +79,21 @@ class MainActivity : AppCompatActivity() {
         findViewById<PreviewView>(R.id.viewFinder) // Display the preview image from Camera
     }
 
+
+    private val btnMostrarActivity by lazy {
+        findViewById<Button>(R.id.btnMostrar)
+    }
+
     // Contains the recognition result. Since  it is a viewModel, it will survive screen rotations
     private val recogViewModel: RecognitionListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        //variables
+
+
+
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -108,6 +122,14 @@ class MainActivity : AppCompatActivity() {
                 viewAdapter.submitList(it)
             }
         )
+
+        btnMostrarActivity.setOnClickListener{
+            val enviar=Intent(this,MainActivity2::class.java)
+            enviar.putExtra("pais", datos)
+            startActivity(enviar)
+        }
+
+
 
     }
 
@@ -208,7 +230,9 @@ class MainActivity : AppCompatActivity() {
     private class ImageAnalyzer(ctx: Context, private val listener: RecognitionListener) :
         ImageAnalysis.Analyzer {
 
+
         private val flowerModel = BanderasPaises.newInstance(ctx)
+
 
         // TODO 1: Add class variable TensorFlow Lite Model
         // Initializing the flowerModel by lazy so that it runs in the same thread when the process
@@ -237,12 +261,18 @@ class MainActivity : AppCompatActivity() {
 
             for (output in outputs) {
                 items.add(Recognition(output.label, output.score))
+                datos=output.label;
+
+                MAX_RESULT_DISPLAY
+
+
             }
             // Return the result
             listener(items.toList())
 
             // Close the image,this tells CameraX to feed the next image to the analyzer
             imageProxy.close()
+
         }
 
 
@@ -283,6 +313,7 @@ class MainActivity : AppCompatActivity() {
                 false
             )
         }
+
 
     }
 

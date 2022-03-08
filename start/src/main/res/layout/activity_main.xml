@@ -26,7 +26,10 @@
         <androidx.camera.view.PreviewView
             android:id="@+id/viewFinder"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent" >
+
+
+        </androidx.camera.view.PreviewView>
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -40,6 +43,13 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/tfl2_logo"
                     android:contentDescription="@string/tensorflow_lite_logo_description" />
+
+                <Button
+                    android:id="@+id/btnMostrar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:height="52dp"
+                    android:text="Mostrar Mapa" />
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.recyclerview.widget.RecyclerView
